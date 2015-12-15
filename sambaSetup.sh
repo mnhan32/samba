@@ -52,3 +52,5 @@ do
 	esac
 done
 shift $(($OPTIND-1))
+
+exec ionice -c 3 smbd -FS
