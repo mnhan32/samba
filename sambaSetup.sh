@@ -39,7 +39,7 @@ genUser(){
 local user="$1" pass="$2" grpname="$3"
 if [ "$user" -a "$pass" ];then
 	if [ "$grpname" ];then 
-		[ $(getent group $grpname) ] && echo "group exist" || addgroup $grpname
+		[ $(getent group $grpname | awk -F : '{print $1}') ] || addgroup $grpname
 		echo $pass | tee - | adduser -h /dev/null -G $grpname $user
 	else
 		echo $pass | tee - | adduser -h /dev/null $user		
@@ -64,4 +64,4 @@ done
 shift $(($OPTIND-1))
 
 smbpasswd -an nobody
-#exec ionice -c 3 smbd -FS
+exec smbd -FS
