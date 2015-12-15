@@ -6,42 +6,52 @@ disspoolss="${10:-Yes}" pIng="${11:-bsd}" file=$SAMBACONF
 
 echo "[global]" > $file #replace file
 echo -e "\tidmap config * : backend = tdb">>$file
-[ -n "$uchar" ] && echo -e "\tunix charset=$uchar">>$file
-[ -n "$dchar" ] && echo -e "\tdos charset=$dchar">>$file
-[ -n "$dproxy" ] && echo -e "\tdns proxy=$dproxy">>$file
-[ -n "$wins" ] && echo -e "\twins support=$wins">>$file
-[ -n "$hostallow" ] && echo -e "\thosts allow=$hostallow">>$file
-[ -n "$guestAcc" ] && echo -e "\tguest account=$guestAcc">>$file
-[ -n "$badUser" ] && echo -e "\tmap to guest=$badUser">>$file
-[ -n "$loadP" ] && echo -e "\tprinting=$loadP">>$file
-[ -n "$pName" ] && echo -e "\tprintcap name=$pName">>$file
-[ -n "$disspoolss" ] && echo -e "\tdisable spoolss=$disspoolss">>$file
-[ -n "$pIng" ] && echo -e "\tprinting=$pIng">>$file
-
+[ "$uchar" ] && echo -e "\tunix charset=$uchar">>$file
+[ "$dchar" ] && echo -e "\tdos charset=$dchar">>$file
+[ "$dproxy" ] && echo -e "\tdns proxy=$dproxy">>$file
+[ "$wins" ] && echo -e "\twins support=$wins">>$file
+[ "$hostallow" ] && echo -e "\thosts allow=$hostallow">>$file
+[ "$guestAcc" ] && echo -e "\tguest account=$guestAcc">>$file
+[ "$badUser" ] && echo -e "\tmap to guest=$badUser">>$file
+[ "$loadP" ] && echo -e "\tload printers=$loadP">>$file
+[ "$pName" ] && echo -e "\tprintcap name=$pName">>$file
+[ "$disspoolss" ] && echo -e "\tdisable spoolss=$disspoolss">>$file
+[ "$pIng" ] && echo -e "\tprinting=$pIng">>$file
+echo -e "\n">>$file
 }
 
 genShare(){
-local share="$1" sharepath="$2" fUser="$3" fGrp="$4" vUsers="$5" vGrps="$6" rOnly="$7" cMask="$8" dMask="$9" gOk="$10" $cmt="$11" file=$SAMBACONF
-[ -n "$share" -a -n "$sharepath" ] && echo -e "[$share]\n\tpath=$sharepath">>$file || exit 1
-[ -n "$cmt" ] && echo -e "\tcomment=$cmt">>$file
-[ -n "$fUser" ] && echo -e "\tforce user=$fUser">>$file
-[ -n "$fGrp" ] && echo -e "\tforce group=$fGrp">>$file
-[ -n "$vUsers" ] && echo -e "\tvalid users=$vUsers">>$file
-[ -n "$vGrps" ] && echo -e "\tvalid groups=$vGrps">>$file
-[ -n "$vUsers" ] && echo -e "\tvalid users=$vUsers">>file
-[ -n "$vGrps" ] && echo -e "\tvalid groups=$vGrps">>file
-[ -n "$rOnly" ] && echo -e "\tread only=$rOnly">>file
-[ -n "$cMask" ] && echo -e "\tcreate mask=$cMask">>file
-[ -n "$dMask" ] && echo -e "\tdirectory mask=$dMask">>file
-[ -n "$gOK" ] && echo -e "\tguest ok=$gOk">>file
+local share="$1" sharepath="$2" fUser="$3" fGrp="$4" vUsers="$5" rOnly="$6" cMask="$7" dMask="$8" guestOk="$9" cmt="$10" file=$SAMBACONF
+[ "$share" -a "$sharepath" ] && echo -e "[$share]\n\tpath=$sharepath">>$file || exit 1
+[ "$cmt" ] && echo -e "\tcomment=$cmt">>$file
+[ "$fUser" ] && echo -e "\tforce user=$fUser">>$file
+[ "$fGrp" ] && echo -e "\tforce group=$fGrp">>$file
+[ "$vUsers" ] && echo -e "\tvalid users=$vUsers">>$file
+[ "$vGrps" ] && echo -e "\tvalid groups=$vGrps">>$file
+[ "$rOnly" ] && echo -e "\tread only=$rOnly">>$file
+[ "$cMask" ] && echo -e "\tcreate mask=$cMask">>$file
+[ "$dMask" ] && echo -e "\tdirectory mask=$dMask">>$file
+[ "$guestOk" ] && echo -e "\tguest ok=$guestOk">>$file
+echo -e "\n">>$file
 }
 
 genUser(){
-local user="$1" pass="$2"
-echo $pass | tee - | adduser -h /dev/null $user && \
-echo $pass | tee - | smbpasswd -s -a $user
+local user="$1" pass="$2" grpname="$3"
+if [ "$user" -a "$pass" ];then
+	if [ "$grpname" ];then 
+		[ $(getent group $grpname) ] && echo "group exist" || addgroup $grpname
+		echo $pass | tee - | adduser -h /dev/null -G $grpname $user
+	else
+		echo $pass | tee - | adduser -h /dev/null $user		
+	fi
+	
+	echo $pass | tee - | smbpasswd -s -a $user
+fi
 }
 
+
+IFS=:
+touch $SAMBACONF
 while getopts "g:s:u:" f
 do
 	case "$f" in
@@ -53,4 +63,5 @@ do
 done
 shift $(($OPTIND-1))
 
-exec ionice -c 3 smbd -FS
+smbpasswd -an nobody
+#exec ionice -c 3 smbd -FS
