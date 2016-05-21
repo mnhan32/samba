@@ -8,6 +8,13 @@
 #password is plaintext(bad...), but I don't know how to do it in more secured way.
 #There is no usage or doc for sambSetup.sh, maybe next version
 #
+
+#
+#05/21/2016
+#-g argument
+#share="$1" sharepath="$2" fUser="$3" fGrp="$4" vUsers="$5" rOnly="$6" cMask="$7" dMask="$8" fcMask="$9" fdMask="$10" guestOk="$11" cmt="$12"
+#
+
 /usr/bin/docker run -d --name sambaServer \#setup name, running in detach mode
 --env SAMBACONF=/etc/samba/smb.conf \#define env for samba
 --env TIMEZONE="Asia/Taipei" \#define timezone

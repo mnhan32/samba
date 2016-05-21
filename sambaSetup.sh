@@ -1,4 +1,11 @@
 #!/bin/ash
+
+#
+# 05/21/2016
+#add force create mode and force create mode
+#This is for linux client
+#
+
 genSambaGlobal(){
 local uchar="$1" dchar="$2" dproxy="${3:-No}" wins="${4:-Yes}" hostallow="$5" \
 guestAcc="${6:-nobody}" badUser="${7:-bad user}" loadP="${8:-No}" pName="${9:-/dev/null}" \
