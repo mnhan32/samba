@@ -16,8 +16,8 @@
 -v /serverSide/pathB:/dockerSide/pathB \#anthoer folder
 mnhan32/samba:1.5 \# define docker to use
 -g "UTF8:CP950:No:Yes:192.168.1.:nobody:'bad user':No:/dev/null:Yes:bsd" \#-g for [global] setup, check sambaSetup.sh to usage
--s "Media:/samba/media:nobody:nogroup:'':No:0777:0777:Yes:'Media Center'" \#-s for folder setup. this one set to guest, 
--s "Backup:/samba/backup:'':'':@sambaSel:No:0777:0777:'':Backup" \#this one only allowed valid users
+-s "Media:/samba/media:nobody:nogroup:'':No:0777:0777:0777:0777:Yes:'Media Center'" \#-s for folder setup. this one set to guest, 
+-s "Backup:/samba/backup:'':'':@sambaSel:No:0777:0777:0777:0777:'':Backup" \#this one only allowed valid users
 -u "usr1:1:sambaSel" \# -u add user to linux and samba,  "usrname:password:groupname"
 -u "usr2:1:sambaSel" \
 -u "usr3:1:sambaSel"

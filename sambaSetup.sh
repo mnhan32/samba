@@ -21,7 +21,7 @@ echo -e "\n">>$file
 }
 
 genShare(){
-local share="$1" sharepath="$2" fUser="$3" fGrp="$4" vUsers="$5" rOnly="$6" cMask="$7" dMask="$8" guestOk="$9" cmt="$10" file=$SAMBACONF
+local share="$1" sharepath="$2" fUser="$3" fGrp="$4" vUsers="$5" rOnly="$6" cMask="$7" dMask="$8" fcMask="$9" fdMask="$10" guestOk="$11" cmt="$12" file=$SAMBACONF
 [ "$share" -a "$sharepath" ] && echo -e "[$share]\n\tpath=$sharepath">>$file || exit 1
 [ "$cmt" ] && echo -e "\tcomment=$cmt">>$file
 [ "$fUser" ] && echo -e "\tforce user=$fUser">>$file
@@ -31,6 +31,8 @@ local share="$1" sharepath="$2" fUser="$3" fGrp="$4" vUsers="$5" rOnly="$6" cMas
 [ "$rOnly" ] && echo -e "\tread only=$rOnly">>$file
 [ "$cMask" ] && echo -e "\tcreate mask=$cMask">>$file
 [ "$dMask" ] && echo -e "\tdirectory mask=$dMask">>$file
+[ "$fcMask" ] && echo -e "\tforce directory mode=$fcMask">>$file
+[ "$fdMask" ] && echo -e "\tforce create mode=$fdMask">>$file
 [ "$guestOk" ] && echo -e "\tguest ok=$guestOk">>$file
 echo -e "\n">>$file
 }

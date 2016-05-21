@@ -1,4 +1,4 @@
-FROM docker.io/alpine:latest
+FROM docker.io/alpine:3.3
 MAINTAINER Menghan Ho <mnhan32@gmail.com>
 RUN apk add --update samba samba-common-tools
 COPY sambaSetup.sh /samba/
