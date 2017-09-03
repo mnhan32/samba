@@ -73,4 +73,4 @@ done
 shift $(($OPTIND-1))
 
 smbpasswd -an nobody
-exec smbd -FS
+exec smbd -FS < /dev/null
